@@ -57,21 +57,26 @@ Notes from testing:
 
 The part that actually responds and corrects.
 
-- [ ] Set up the Anthropic SDK with the key from `.env`
-- [ ] Write the system prompt: A2-B1 level, simple French, repeat my sentence back correctly instead of stopping the conversation, explanations in English
-- [ ] Have it return structured JSON:
+- [x] Set up the Anthropic SDK with the key from `.env`
+- [x] Write the system prompt: A2-B1 level, simple French, repeat my sentence back correctly instead of stopping the conversation, explanations in English
+- [x] Have it return structured JSON:
   ```json
   {
-    "reply": "...",
     "corrections": [{ "original": "...", "corrected": "...", "explanation": "..." }],
+    "reply": "...",
     "new_vocab": [{ "word": "...", "translation": "..." }]
   }
   ```
-- [ ] Write `get_reply(history, user_text, mode)`
-- [ ] Keep costs down: cache the system prompt, only send the last few turns, cap the response length
-- [ ] Try it from the terminal by typing French sentences
+- [x] Write `get_reply(history, user_text, mode)`
+- [x] Keep costs down: cache the system prompt, only send the last few turns, cap the response length
+- [x] Try it from the terminal by typing French sentences
 
 Finished when I type a sentence with a mistake and get back a natural reply plus a correction for it.
+
+Notes from testing:
+- At first the tutor sometimes repeated my mistake in its own reply ("si il fait beau"). Putting `corrections` before `reply` in the JSON fixed it, because now it finds the mistakes before it writes the answer.
+- Low effort is faster (~2s instead of ~3-5s) and was just as good, even better, at catching mistakes.
+- A turn costs about $0.0001, so a 20 minute session is well under 1 cent.
 
 ## 4. Text to speech
 

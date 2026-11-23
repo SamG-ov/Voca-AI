@@ -6,3 +6,5 @@ faster-whisper==1.2.*
 av==18.*
 nvidia-cublas-cu12==12.*
 nvidia-cudnn-cu12==9.*
+
+anthropic==2.*
