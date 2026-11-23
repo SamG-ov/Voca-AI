@@ -1,0 +1,16 @@
+.env
+
+__pycache__/
+.venv/
+.pytest_cache/
+
+node_modules/
+dist/
+
+models/
+*.wav
+*.mp3
+*.webm
+
+.vscode/
+.idea/
