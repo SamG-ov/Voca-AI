@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import FRONTEND_URL
+from app import stt  # loads the whisper model when the server starts
 
 app = FastAPI()
 

@@ -38,14 +38,20 @@ Finished when the backend answers on `/api/health` and the frontend loads in the
 
 Turn a recording of me speaking French into text, locally.
 
-- [ ] Install faster-whisper and load the model once when the server starts
-- [ ] Compare `small`, `medium` and `large-v3-turbo` on my GPU (4 GB VRAM) and pick the best tradeoff between speed and accuracy
-- [ ] Fall back to CPU if CUDA isn't available
-- [ ] Set the language to French instead of auto-detecting it
-- [ ] Write `transcribe(audio) -> text`
-- [ ] Test with a few recordings, including some with deliberate mistakes. Whisper tends to "fix" grammar on its own, which would hide exactly the mistakes I want corrected.
+- [x] Install faster-whisper and load the model once when the server starts
+- [x] Compare `small`, `medium` and `large-v3-turbo` on my GPU (4 GB VRAM) and pick the best tradeoff between speed and accuracy
+- [x] Fall back to CPU if CUDA isn't available
+- [x] Set the language to French instead of auto-detecting it
+- [x] Write `transcribe(audio) -> text`
+- [x] Test with a few recordings, including some with deliberate mistakes. Whisper tends to "fix" grammar on its own, which would hide exactly the mistakes I want corrected.
 
 Finished when a short recording comes back as an accurate transcript in a second or two.
+
+Notes from testing:
+- `large-v3-turbo` won. It was about as fast as `small` (~0.7s per sentence) and got the most words right. `medium` was twice as slow.
+- Mistakes like "j'ai allé", "une café" and "un baguette" come through as said, which is what I want.
+- Mistakes you can't hear (like "noir" vs "noirs") can't be caught from audio anyway.
+- On Windows the GPU needs the cuBLAS and cuDNN pip packages, and `av` has to stay on version 18 for now.
 
 ## 3. The tutor
 
