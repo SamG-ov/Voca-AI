@@ -80,12 +80,17 @@ Notes from testing:
 
 ## 4. Text to speech
 
-- [ ] Install edge-tts
-- [ ] Write `synthesize(text, voice, speed) -> mp3`
-- [ ] Pick a default female and male French voice
-- [ ] Default to a slightly slower speed
+- [x] Install edge-tts
+- [x] Write `synthesize(text, voice, speed) -> mp3`
+- [x] Pick 2 female and 2 male French voices to choose from
+- [x] Default to a slightly slower speed
 
 Finished when a French sentence comes out as clear, natural-sounding audio.
+
+Notes:
+- Voices: Vivienne and Denise (female), Remy and Henri (male). Vivienne is the default.
+- Vivienne and Remy are multilingual, so they also sound right when the tutor explains something in English.
+- Default speed is -10%. Each sentence takes about 1 second to generate.
 
 ## 5. Putting the pipeline together
 
