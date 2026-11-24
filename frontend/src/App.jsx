@@ -1,21 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import Home from './pages/Home'
+import Session from './pages/Session'
+import Review from './pages/Review'
 
 function App() {
-  const [status, setStatus] = useState('checking...')
+  const [page, setPage] = useState('home')
+  const [mode, setMode] = useState('free_talk')
+  const [messages, setMessages] = useState([])
 
-  useEffect(() => {
-    fetch('/api/health')
-      .then((res) => setStatus(res.ok ? 'online' : 'offline'))
-      .catch(() => setStatus('offline'))
-  }, [])
+  function startSession(newMode) {
+    setMode(newMode)
+    setPage('session')
+  }
 
-  return (
-    <div className="flex h-screen flex-col items-center justify-center gap-6">
-      <div className="h-24 w-24 rounded-full bg-cyan-400" />
-      <h1 className="text-4xl">Voca-AI</h1>
-      <p className="text-sm text-slate-400">Backend: {status}</p>
-    </div>
-  )
+  function endSession(sessionMessages) {
+    setMessages(sessionMessages)
+    setPage('review')
+  }
+
+  if (page === 'session') {
+    return <Session mode={mode} onEnd={endSession} />
+  }
+
+  if (page === 'review') {
+    return <Review messages={messages} onHome={() => setPage('home')} />
+  }
+
+  return <Home onStart={startSession} />
 }
 
 export default App

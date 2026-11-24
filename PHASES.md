@@ -113,13 +113,18 @@ Notes:
 
 Talk to the tutor from the browser.
 
-- [ ] Three pages: home, session, review
-- [ ] Dark theme with one accent colour
-- [ ] Microphone recording with `MediaRecorder`
-- [ ] Hold space to record, release to send. Ignore key repeat, and don't trigger when typing in an input.
-- [ ] Call `/api/turn` and play the audio that comes back
+- [x] Three pages: home, session, review
+- [x] Dark theme with one accent colour
+- [x] Microphone recording with `MediaRecorder`
+- [x] Hold space to record, release to send. Ignore key repeat, and don't trigger when typing in an input.
+- [x] Call `/api/turn` and play the audio that comes back
 
 Finished when I can hold space, say something, and hear the tutor answer.
+
+Notes:
+- The microphone is turned on once when a session starts, so the first word of each recording doesn't get cut off.
+- A tap shorter than half a second is ignored, and space does nothing while the tutor is thinking or speaking.
+- I kept the pages as a simple `page` state in `App.jsx` instead of adding a router.
 
 ## 7. Conversation screen
 
