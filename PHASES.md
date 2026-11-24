@@ -130,14 +130,19 @@ Notes:
 
 Make it look good. I want it minimal, but a bit futuristic.
 
-- [ ] An animated orb in the middle with different states: idle, listening, thinking, speaking
-- [ ] Have the orb react to my voice volume while I'm talking
-- [ ] Chat-style transcript
-- [ ] Correction cards that slide in on the side
-- [ ] Small hints like "Hold space to talk" and "Thinking..."
-- [ ] Make sure the layout works at different window sizes
+- [x] An animated orb in the middle with different states: idle, listening, thinking, speaking
+- [x] Have the orb react to my voice volume while I'm talking
+- [x] Chat-style transcript
+- [x] Correction cards that slide in on the side
+- [x] Small hints like "Hold space to talk" and "Thinking..."
+- [x] Make sure the layout works at different window sizes
 
 Finished when a full conversation feels smooth and looks finished.
+
+Notes:
+- Animations use the `motion` library (the new name of Framer Motion).
+- The mic volume comes from a Web Audio `AnalyserNode`, and the orb grows up to 1.5x when I talk louder.
+- On big screens the corrections are a panel on the right. On small screens they move under the chat, and the orb gets smaller.
 
 ## 8. Conversation modes
 
