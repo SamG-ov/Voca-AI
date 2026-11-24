@@ -88,22 +88,26 @@ Notes from testing:
 Finished when a French sentence comes out as clear, natural-sounding audio.
 
 Notes:
-- Voices: Vivienne and Denise (female), Remy and Henri (male). Vivienne is the default.
-- Vivienne and Remy are multilingual, so they also sound right when the tutor explains something in English.
-- Default speed is -10%. Each sentence takes about 1 second to generate.
+- Voices: Denise and Vivienne (female), Henri and Remy (male). Denise is the default.
+- Vivienne and Remy are multilingual, so they also sound right when the tutor explains something in English. But they're often much slower (up to 10s), which is why Denise is the default.
+- Default speed is -10%. With Denise or Henri, each sentence takes about 1 second to generate.
 
 ## 5. Putting the pipeline together
 
 One endpoint that does all three steps.
 
-- [ ] `POST /api/turn`: takes the audio, conversation history, mode and settings
-- [ ] Returns the transcript, the reply, corrections, new vocab and the reply audio
-- [ ] Validate the request with Pydantic
-- [ ] Handle the obvious failures: empty recording, no speech, API errors
-- [ ] Allow requests from the local frontend (CORS)
-- [ ] Log how long each step takes so I know where the delay is
+- [x] `POST /api/turn`: takes the audio, conversation history, mode and settings
+- [x] Returns the transcript, the reply, corrections, new vocab and the reply audio
+- [x] Validate the request with Pydantic
+- [x] Handle the obvious failures: empty recording, no speech, API errors
+- [x] Allow requests from the local frontend (CORS)
+- [x] Log how long each step takes so I know where the delay is
 
 Finished when I can send an audio file to `/api/turn` from the FastAPI docs page and get a full response back.
+
+Notes:
+- A normal turn takes about 4-5 seconds: speech to text ~1.1s, tutor ~1.5s, text to speech ~1-2s, plus the upload.
+- The first request after starting the server is a bit slower because Whisper is warming up.
 
 ## 6. Frontend basics
 
