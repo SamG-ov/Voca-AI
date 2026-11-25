@@ -5,11 +5,11 @@ import Review from './pages/Review'
 
 function App() {
   const [page, setPage] = useState('home')
-  const [mode, setMode] = useState('free_talk')
+  const [session, setSession] = useState(null)
   const [messages, setMessages] = useState([])
 
-  function startSession(newMode) {
-    setMode(newMode)
+  function startSession(newSession) {
+    setSession(newSession)
     setPage('session')
   }
 
@@ -19,7 +19,7 @@ function App() {
   }
 
   if (page === 'session') {
-    return <Session mode={mode} onEnd={endSession} />
+    return <Session session={session} onEnd={endSession} />
   }
 
   if (page === 'review') {

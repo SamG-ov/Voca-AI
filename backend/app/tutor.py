@@ -2,6 +2,7 @@ import anthropic
 from pydantic import BaseModel
 
 from app.config import ANTHROPIC_API_KEY
+from app.modes import get_mode_prompt
 
 MODEL = "claude-haiku-5-5"
 
@@ -13,7 +14,7 @@ The student's level is between A2 and B1.
 
 How to talk:
 - Speak only in French, using simple, everyday words and short sentences.
-- Always use "tu" with the student, never "vous".
+- Use "tu" with the student, unless the mode below says to use "vous".
 - Keep each reply to 1-3 sentences. This is a conversation, not a lesson.
 - Usually end with a question so the conversation keeps going.
 - From time to time use a B1 structure (passé composé vs imparfait, futur proche, pronouns y and en) so the student hears it.
@@ -35,9 +36,8 @@ New words:
 - Skip basic words they surely know (like bonjour, demain, beau, fatigué). Often the list will be empty, and that's fine.
 """
 
-MODES = {
-    "free_talk": "Mode: free conversation. Talk about anything the student wants, and ask about their life, hobbies and plans.",
-}
+# Sent as the student's first message so the tutor can speak first
+START_MESSAGE = "Start the conversation."
 
 
 class Correction(BaseModel):
@@ -61,19 +61,20 @@ class TutorReply(BaseModel):
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
-def get_reply(history, user_text, mode="free_talk"):
+def get_reply(history, user_text, mode="free_talk", option=""):
     messages = history[-MAX_MESSAGES:]
     messages.append({"role": "user", "content": user_text})
 
-    # The API needs the first message to be from the user
+    # The API needs the first message to be from the user.
+    # When the tutor spoke first, put back the message that started it.
     if messages[0]["role"] == "assistant":
-        messages = messages[1:]
+        messages.insert(0, {"role": "user", "content": START_MESSAGE})
 
     # The system prompt is the same every turn, so we cache it to pay less
     system = [
         {
             "type": "text",
-            "text": SYSTEM_PROMPT + "\n" + MODES[mode],
+            "text": SYSTEM_PROMPT + "\n" + get_mode_prompt(mode, option),
             "cache_control": {"type": "ephemeral"},
         }
     ]

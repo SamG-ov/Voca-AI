@@ -146,14 +146,20 @@ Notes:
 
 ## 8. Conversation modes
 
-- [ ] Mode picker on the home page
-- [ ] Separate prompt instructions for each mode
-- [ ] Free talk: the tutor opens with a greeting and a question
-- [ ] Scenarios: 6-8 situations (café, boulangerie, hotel, doctor, train station, job interview...), each with a goal and a role for the tutor
-- [ ] Topic discussion: a list of topics plus a random option
-- [ ] The tutor speaks first when a session starts
+- [x] Mode picker on the home page
+- [x] Separate prompt instructions for each mode
+- [x] Free talk: the tutor opens with a greeting and a question
+- [x] Scenarios: 6-8 situations (café, boulangerie, hotel, doctor, train station, job interview...), each with a goal and a role for the tutor
+- [x] Topic discussion: a list of topics plus a random option
+- [x] The tutor speaks first when a session starts
 
 Finished when each mode starts a different kind of conversation that makes sense.
+
+Notes:
+- Scenarios and topics live in `backend/app/modes.py`. The frontend loads them from `/api/modes`, so adding a new one only means editing that file.
+- 7 scenarios (café, bakery, hotel, doctor, train station, apartment visit, job interview) and 12 topics.
+- In role-plays the tutor uses "vous", like in real life. At first it kept mixing "tu" and "vous", and once it even "corrected" "s'il vous plaît" to "s'il te plaît" while playing a waiter.
+- For the tutor to speak first, `/api/start` sends a hidden "Start the conversation." message. The same message is put back at the start of the history on later turns, because the API needs the first message to come from the user.
 
 ## 9. Repeat after me
 
