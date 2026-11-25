@@ -6,13 +6,7 @@ import useSpacebar from '../hooks/useSpacebar'
 import Orb from '../components/Orb'
 import ChatMessage from '../components/ChatMessage'
 import CorrectionCard from '../components/CorrectionCard'
-
-function playAudio(base64Audio, onEnded) {
-  const player = new Audio('data:audio/mpeg;base64,' + base64Audio)
-  player.onended = onEnded
-  player.play().catch(onEnded)
-  return player
-}
+import { playAudio } from '../audio'
 
 function Session({ session, onEnd }) {
   const [status, setStatus] = useState('thinking')
@@ -93,7 +87,7 @@ function Session({ session, onEnd }) {
     if (playerRef.current) {
       playerRef.current.pause()
     }
-    onEnd(messages)
+    onEnd({ messages: messages, drillScores: [] })
   }
 
   useSpacebar(handlePress, handleRelease)

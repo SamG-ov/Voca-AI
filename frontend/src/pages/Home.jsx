@@ -49,7 +49,7 @@ function Home({ onStart }) {
 
       {error && <p className="text-rose-400">{error}</p>}
 
-      <div className="grid w-full max-w-3xl gap-4 md:grid-cols-3">
+      <div className="grid w-full max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <ModeCard
           title="Free talk"
           text="Chat about anything, like with a friend."
@@ -67,6 +67,12 @@ function Home({ onStart }) {
           text="Pick a topic and give your opinion."
           active={picking === 'topics'}
           onClick={() => setPicking('topics')}
+        />
+        <ModeCard
+          title="Repeat after me"
+          text="Listen to a sentence and say it back."
+          active={false}
+          onClick={() => onStart({ mode: 'drill', option: '', title: 'Repeat after me', goal: '' })}
         />
       </div>
 

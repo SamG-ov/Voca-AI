@@ -4,8 +4,9 @@ import { useEffect } from 'react'
 function useSpacebar(onPress, onRelease) {
   useEffect(() => {
     function isTyping(event) {
+      // checkboxes don't count, only places where you type text
       const tag = event.target.tagName
-      return tag === 'INPUT' || tag === 'TEXTAREA'
+      return tag === 'TEXTAREA' || (tag === 'INPUT' && event.target.type === 'text')
     }
 
     function handleKeyDown(event) {

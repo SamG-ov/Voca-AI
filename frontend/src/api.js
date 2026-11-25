@@ -37,6 +37,21 @@ export function startSession(session) {
   return request('/api/start', { method: 'POST', body: form })
 }
 
+export function getDrillSentence(currentSentence) {
+  const form = new FormData()
+  form.append('current', currentSentence)
+
+  return request('/api/drill/next', { method: 'POST', body: form })
+}
+
+export function checkDrill(audioBlob, sentence) {
+  const form = new FormData()
+  form.append('audio', audioBlob, 'recording.webm')
+  form.append('sentence', sentence)
+
+  return request('/api/drill/check', { method: 'POST', body: form })
+}
+
 export function sendTurn(audioBlob, history, session) {
   const form = new FormData()
   form.append('audio', audioBlob, 'recording.webm')

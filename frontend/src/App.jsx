@@ -1,20 +1,25 @@
 import { useState } from 'react'
 import Home from './pages/Home'
 import Session from './pages/Session'
+import Drill from './pages/Drill'
 import Review from './pages/Review'
 
 function App() {
   const [page, setPage] = useState('home')
   const [session, setSession] = useState(null)
-  const [messages, setMessages] = useState([])
+  const [result, setResult] = useState(null)
 
   function startSession(newSession) {
     setSession(newSession)
-    setPage('session')
+    if (newSession.mode === 'drill') {
+      setPage('drill')
+    } else {
+      setPage('session')
+    }
   }
 
-  function endSession(sessionMessages) {
-    setMessages(sessionMessages)
+  function endSession(sessionResult) {
+    setResult(sessionResult)
     setPage('review')
   }
 
@@ -22,8 +27,12 @@ function App() {
     return <Session session={session} onEnd={endSession} />
   }
 
+  if (page === 'drill') {
+    return <Drill onEnd={endSession} />
+  }
+
   if (page === 'review') {
-    return <Review messages={messages} onHome={() => setPage('home')} />
+    return <Review result={result} onHome={() => setPage('home')} />
   }
 
   return <Home onStart={startSession} />

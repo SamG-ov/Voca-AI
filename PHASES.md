@@ -163,14 +163,21 @@ Notes:
 
 ## 9. Repeat after me
 
-- [ ] Sentences at my level, either generated or from a list
-- [ ] The tutor reads the sentence, with the option to hide the text
-- [ ] I repeat it with space, and the transcript is compared word by word
-- [ ] `drill.py`: normalise case, punctuation and accents, then diff the words
-- [ ] Show which words matched, which didn't, and a score
-- [ ] Buttons for listen again, try again and next sentence
+- [x] Sentences at my level, either generated or from a list
+- [x] The tutor reads the sentence, with the option to hide the text
+- [x] I repeat it with space, and the transcript is compared word by word
+- [x] `drill.py`: normalise case, punctuation and accents, then diff the words
+- [x] Show which words matched, which didn't, and a score
+- [x] Buttons for listen again, try again and next sentence
 
 Finished when I can do a full round and clearly see what I got wrong.
+
+Notes:
+- I went with a fixed list of 30 sentences instead of generating them, so the drill costs nothing and works without the API.
+- None of the sentences have numbers, because Whisper might write "8" instead of "huit" and the comparison would fail.
+- The comparison uses Python's `difflib.SequenceMatcher`, so a missing or extra word doesn't shift everything after it.
+- Accents are ignored when comparing, because "a" and "à" sound the same and that's Whisper's spelling, not my pronunciation.
+- Checking a sentence takes about 1 second.
 
 ## 10. Session review
 

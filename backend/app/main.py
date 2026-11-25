@@ -6,6 +6,7 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import FRONTEND_URL
+from app.drill import compare, random_sentence
 from app.modes import SCENARIOS, TOPICS, is_valid
 from app.stt import transcribe  # loads the whisper model when the server starts
 from app.tutor import START_MESSAGE, get_reply
@@ -28,6 +29,21 @@ def check_settings(mode, option, voice):
         raise HTTPException(400, f"Unknown mode or option: {mode} {option}")
     if voice not in VOICES:
         raise HTTPException(400, "Unknown voice: " + voice)
+
+
+async def listen(audio):
+    audio_bytes = await audio.read()
+    if len(audio_bytes) == 0:
+        raise HTTPException(400, "The recording is empty")
+
+    try:
+        text = transcribe(audio_bytes)
+    except Exception:
+        raise HTTPException(400, "Could not read the audio file")
+
+    if text == "":
+        raise HTTPException(422, "I didn't hear anything, try again")
+    return text
 
 
 def ask_tutor(history, user_text, mode, option):
@@ -94,20 +110,10 @@ async def turn(
     except json.JSONDecodeError:
         raise HTTPException(400, "History is not valid JSON")
 
-    audio_bytes = await audio.read()
-    if len(audio_bytes) == 0:
-        raise HTTPException(400, "The recording is empty")
-
     # 1. Speech to text
     start_time = time.time()
-    try:
-        user_text = transcribe(audio_bytes)
-    except Exception:
-        raise HTTPException(400, "Could not read the audio file")
+    user_text = await listen(audio)
     stt_time = time.time() - start_time
-
-    if user_text == "":
-        raise HTTPException(422, "I didn't hear anything, try again")
 
     # 2. Tutor reply
     start_time = time.time()
@@ -128,3 +134,29 @@ async def turn(
         "new_vocab": answer.new_vocab,
         "audio": reply_audio,
     }
+
+
+# "Repeat after me": the tutor reads a new sentence
+@app.post("/api/drill/next")
+async def drill_next(
+    current: str = Form(""),
+    voice: str = Form("denise"),
+    speed: str = Form("-10%", pattern=SPEED_PATTERN),
+):
+    if voice not in VOICES:
+        raise HTTPException(400, "Unknown voice: " + voice)
+
+    sentence = random_sentence(current)
+    audio = await make_voice(sentence, voice, speed)
+    return {"sentence": sentence, "audio": audio}
+
+
+# "Repeat after me": compare what I said with the sentence
+@app.post("/api/drill/check")
+async def drill_check(
+    audio: UploadFile = File(...),
+    sentence: str = Form(..., min_length=1, max_length=300),
+):
+    heard = await listen(audio)
+    words, score = compare(sentence, heard)
+    return {"heard": heard, "words": words, "score": score}

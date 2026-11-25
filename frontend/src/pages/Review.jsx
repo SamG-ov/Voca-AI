@@ -1,10 +1,15 @@
-function Review({ messages, onHome }) {
-  const myMessages = messages.filter((message) => message.role === 'user')
+function Review({ result, onHome }) {
+  const myMessages = result.messages.filter((message) => message.role === 'user')
+  const drillCount = result.drillScores.length
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-6">
       <h1 className="text-4xl font-light">Session finished</h1>
-      <p className="text-slate-400">You spoke {myMessages.length} times. The full review is coming soon.</p>
+      {drillCount > 0 ? (
+        <p className="text-slate-400">You made {drillCount} attempts. The full review is coming soon.</p>
+      ) : (
+        <p className="text-slate-400">You spoke {myMessages.length} times. The full review is coming soon.</p>
+      )}
 
       <button
         onClick={onHome}
