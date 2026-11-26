@@ -75,7 +75,9 @@ function Drill({ onEnd }) {
     try {
       const data = await checkDrill(audio, sentence)
       setResult(data)
-      setScores([...scores, { sentence: sentence, score: data.score }])
+      // keep the missed words for the review, without commas and full stops
+      const missed = data.words.filter((word) => !word.correct).map((word) => word.word.replace(/[.,!?;:]/g, ''))
+      setScores([...scores, { sentence: sentence, score: data.score, missed: missed }])
     } catch (err) {
       setError(err.message)
     }

@@ -32,7 +32,7 @@ function App() {
   }
 
   if (page === 'review') {
-    return <Review result={result} onHome={() => setPage('home')} />
+    return <Review session={session} result={result} onHome={() => setPage('home')} />
   }
 
   return <Home onStart={startSession} />

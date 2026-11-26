@@ -181,12 +181,19 @@ Notes:
 
 ## 10. Session review
 
-- [ ] "End session" button
-- [ ] `POST /api/review` builds a summary from the whole conversation
-- [ ] Review page with mistakes, new words, a few tips and drill scores
-- [ ] Download the review as a Markdown file
+- [x] "End session" button
+- [x] `POST /api/review` builds a summary from the whole conversation
+- [x] Review page with mistakes, new words, a few tips and drill scores
+- [x] Download the review as a Markdown file
 
 Finished when ending a session gives me a review I'd actually want to read.
+
+Notes:
+- The tutor only writes the summary, what went well and the tips. Mistakes and new words are already known from the session, so they don't need another API call.
+- The tips group similar mistakes together (for example all the le/la mistakes become one tip).
+- A drill-only session doesn't call the API at all. It shows each attempt with its score and the words I missed.
+- The same mistake or word is only listed once, even if it came up several times.
+- A review takes about 3 seconds and costs less than a cent.
 
 ## 11. Polish and tests
 

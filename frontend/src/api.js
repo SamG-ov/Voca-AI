@@ -52,6 +52,14 @@ export function checkDrill(audioBlob, sentence) {
   return request('/api/drill/check', { method: 'POST', body: form })
 }
 
+export function getReview(messages, corrections) {
+  return request('/api/review', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: messages, corrections: corrections }),
+  })
+}
+
 export function sendTurn(audioBlob, history, session) {
   const form = new FormData()
   form.append('audio', audioBlob, 'recording.webm')

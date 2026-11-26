@@ -4,12 +4,13 @@ import time
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 from app.config import FRONTEND_URL
 from app.drill import compare, random_sentence
 from app.modes import SCENARIOS, TOPICS, is_valid
 from app.stt import transcribe  # loads the whisper model when the server starts
-from app.tutor import START_MESSAGE, get_reply
+from app.tutor import START_MESSAGE, Correction, get_reply, get_review
 from app.tts import VOICES, synthesize
 
 SPEED_PATTERN = r"^[+-]\d{1,2}%$"
@@ -160,3 +161,33 @@ async def drill_check(
     heard = await listen(audio)
     words, score = compare(sentence, heard)
     return {"heard": heard, "words": words, "score": score}
+
+
+class ReviewMessage(BaseModel):
+    role: str
+    text: str
+
+
+class ReviewRequest(BaseModel):
+    messages: list[ReviewMessage] = Field(max_length=300)
+    corrections: list[Correction] = Field(max_length=300)
+
+
+# End of a conversation: the tutor writes a short review
+@app.post("/api/review")
+def review(request: ReviewRequest):
+    said_something = False
+    for message in request.messages:
+        if message.role == "user":
+            said_something = True
+
+    if not said_something:
+        raise HTTPException(400, "There is nothing to review yet")
+
+    try:
+        result = get_review(request.messages, request.corrections)
+    except Exception as error:
+        print("Review error:", error)
+        raise HTTPException(502, "The tutor couldn't write the review right now")
+
+    return result

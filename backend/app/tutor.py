@@ -92,3 +92,50 @@ def get_reply(history, user_text, mode="free_talk", option=""):
         raise Exception("The tutor didn't give a valid answer: " + response.stop_reason)
 
     return response.parsed_output, response.usage
+
+
+REVIEW_PROMPT = """You are a French tutor. Below is a spoken practice conversation with a student (level A2-B1), and the list of mistakes found during it.
+
+Write a short review of the session in simple English:
+- "summary": 2-3 sentences on how the session went. Be encouraging but honest.
+- "good_points": 1-3 specific things the student did well. You can quote their French.
+- "tips": 2-3 concrete things to practise next, based on the mistakes. Group similar mistakes together (for example several gender mistakes = one tip about le/la).
+
+Talk directly to the student ("you did well..."), never "the student".
+Base the tips mainly on the mistakes, but never mention "the list" itself.
+Keep every point short, one sentence each."""
+
+
+class Review(BaseModel):
+    summary: str
+    good_points: list[str]
+    tips: list[str]
+
+
+def get_review(messages, corrections):
+    text = "Conversation:\n"
+    for message in messages:
+        if message.role == "user":
+            text += "Student: " + message.text + "\n"
+        else:
+            text += "Tutor: " + message.text + "\n"
+
+    text += "\nMistakes:\n"
+    if len(corrections) == 0:
+        text += "(none)\n"
+    for correction in corrections:
+        text += f"- {correction.original} -> {correction.corrected} ({correction.explanation})\n"
+
+    response = client.messages.parse(
+        model=MODEL,
+        max_tokens=1024,
+        system=REVIEW_PROMPT,
+        messages=[{"role": "user", "content": text}],
+        output_format=Review,
+        output_config={"effort": "low"},
+    )
+
+    if response.parsed_output is None:
+        raise Exception("The tutor didn't give a valid review: " + response.stop_reason)
+
+    return response.parsed_output
