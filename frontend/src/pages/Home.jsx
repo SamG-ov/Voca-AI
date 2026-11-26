@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getModes } from '../api'
 import Orb from '../components/Orb'
+import Settings from '../components/Settings'
 
-function Home({ onStart }) {
+function Home({ onStart, settings, onSettingsChange }) {
   // which list is open: none, scenarios or topics
   const [picking, setPicking] = useState('')
   const [scenarios, setScenarios] = useState({})
@@ -76,6 +77,10 @@ function Home({ onStart }) {
         />
       </div>
 
+      {picking !== '' && Object.keys(scenarios).length === 0 && !error && (
+        <p className="animate-pulse text-slate-400">Loading...</p>
+      )}
+
       {picking === 'scenarios' && (
         <div className="grid w-full max-w-3xl gap-3 sm:grid-cols-2">
           {Object.keys(scenarios).map((key) => (
@@ -110,6 +115,8 @@ function Home({ onStart }) {
           ))}
         </div>
       )}
+
+      <Settings settings={settings} onChange={onSettingsChange} />
     </div>
   )
 }

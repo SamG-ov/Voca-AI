@@ -33,13 +33,17 @@ export function startSession(session) {
   const form = new FormData()
   form.append('mode', session.mode)
   form.append('option', session.option)
+  form.append('voice', session.voice)
+  form.append('speed', session.speed)
 
   return request('/api/start', { method: 'POST', body: form })
 }
 
-export function getDrillSentence(currentSentence) {
+export function getDrillSentence(currentSentence, session) {
   const form = new FormData()
   form.append('current', currentSentence)
+  form.append('voice', session.voice)
+  form.append('speed', session.speed)
 
   return request('/api/drill/next', { method: 'POST', body: form })
 }
@@ -66,6 +70,8 @@ export function sendTurn(audioBlob, history, session) {
   form.append('history', JSON.stringify(history))
   form.append('mode', session.mode)
   form.append('option', session.option)
+  form.append('voice', session.voice)
+  form.append('speed', session.speed)
 
   return request('/api/turn', { method: 'POST', body: form })
 }

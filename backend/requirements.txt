@@ -11,3 +11,8 @@ nvidia-cudnn-cu12==9.*
 anthropic==2.*
 
 edge-tts==7.*
+
+# for tests and formatting
+pytest==9.*
+httpx==0.28.*
+ruff==0.17.*

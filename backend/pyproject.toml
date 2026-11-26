@@ -1,0 +1,12 @@
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# the classic checks: pycodestyle errors, pyflakes and sorted imports
+select = ["E", "F", "I"]
+# the prompts have long lines of text, and the formatter already keeps the code short
+ignore = ["E501"]

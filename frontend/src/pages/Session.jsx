@@ -16,6 +16,7 @@ function Session({ session, onEnd }) {
   const playerRef = useRef(null)
   const chatEndRef = useRef(null)
   const startedRef = useRef(false)
+  const endedRef = useRef(false)
   const { start, stop, getVolume, micError } = useRecorder()
 
   // the tutor says the first line
@@ -26,6 +27,8 @@ function Session({ session, onEnd }) {
 
     startSession(session)
       .then((data) => {
+        // the session was ended while we were waiting, so don't start talking
+        if (endedRef.current) return
         setMessages([{ role: 'assistant', text: data.reply, newVocab: data.new_vocab }])
         setStatus('speaking')
         playerRef.current = playAudio(data.audio, () => setStatus('idle'))
@@ -68,6 +71,7 @@ function Session({ session, onEnd }) {
 
     try {
       const data = await sendTurn(audio, history, session)
+      if (endedRef.current) return
 
       setMessages([
         ...messages,
@@ -84,6 +88,7 @@ function Session({ session, onEnd }) {
   }
 
   function endSession() {
+    endedRef.current = true
     if (playerRef.current) {
       playerRef.current.pause()
     }
@@ -133,7 +138,9 @@ function Session({ session, onEnd }) {
 
           <StatusHint status={status} />
           {micError && (
-            <p className="mt-2 text-rose-400">I can't use your microphone. Please allow it in the browser and reload.</p>
+            <p className="mt-2 text-rose-400">
+              I can't use your microphone. Please allow it in the browser and reload.
+            </p>
           )}
           {error && <p className="mt-2 text-rose-400">{error}</p>}
 

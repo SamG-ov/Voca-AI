@@ -197,14 +197,22 @@ Notes:
 
 ## 11. Polish and tests
 
-- [ ] Settings for voice and speaking speed
-- [ ] Proper messages for denied mic access, no speech, backend down and API errors
-- [ ] Loading states, and no double submits
-- [ ] pytest tests for the drill comparison, parsing the tutor's response, and `/api/turn` with the three services mocked
-- [ ] Check the real cost per session
-- [ ] Clean up the code and run formatters (ruff, prettier)
+- [x] Settings for voice and speaking speed
+- [x] Proper messages for denied mic access, no speech, backend down and API errors
+- [x] Loading states, and no double submits
+- [x] pytest tests for the drill comparison, parsing the tutor's response, and `/api/turn` with the three services mocked
+- [x] Check the real cost per session
+- [x] Clean up the code and run formatters (ruff, prettier)
 
 Finished when tests pass and I can get through a 20 minute session without problems.
+
+Notes:
+- Settings (voice and speed) are on the home page and saved in the browser's localStorage.
+- 29 tests, run with `pytest` from the backend folder. They replace Whisper, Claude and edge-tts with fakes, so they're fast and free and don't need the GPU.
+- A longer test session found a real bug: the tutor kept listing mistakes from earlier messages again and again ("j'ai allé" came back 7 times). Telling it to only correct the latest message wasn't enough, so now the code also drops any correction whose words aren't in the latest message.
+- Real cost: about $0.005 for a 30-turn session including the review, so around $0.15 a month if I practise every day.
+- If I end a session while the tutor is still loading, its reply is ignored and doesn't play on the review page.
+- `ruff check .` and `ruff format .` for Python, and `npm run format` for the frontend. Ruff only uses the classic rules (E, F, I).
 
 ## 12. Demo and final README
 

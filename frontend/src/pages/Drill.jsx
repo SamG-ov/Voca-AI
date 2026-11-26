@@ -6,7 +6,7 @@ import useRecorder from '../hooks/useRecorder'
 import useSpacebar from '../hooks/useSpacebar'
 import Orb from '../components/Orb'
 
-function Drill({ onEnd }) {
+function Drill({ session, onEnd }) {
   const [status, setStatus] = useState('thinking')
   const [sentence, setSentence] = useState('')
   const [sentenceAudio, setSentenceAudio] = useState('')
@@ -17,6 +17,7 @@ function Drill({ onEnd }) {
   const startTimeRef = useRef(0)
   const playerRef = useRef(null)
   const startedRef = useRef(false)
+  const endedRef = useRef(false)
   const { start, stop, getVolume, micError } = useRecorder()
 
   function speak(audio) {
@@ -29,8 +30,10 @@ function Drill({ onEnd }) {
     setResult(null)
     setError('')
 
-    getDrillSentence(sentence)
+    getDrillSentence(sentence, session)
       .then((data) => {
+        // the drill was ended while we were waiting, so don't start talking
+        if (endedRef.current) return
         setSentence(data.sentence)
         setSentenceAudio(data.audio)
         speak(data.audio)
@@ -87,6 +90,7 @@ function Drill({ onEnd }) {
   useSpacebar(handlePress, handleRelease)
 
   function endDrill() {
+    endedRef.current = true
     if (playerRef.current) {
       playerRef.current.pause()
     }
@@ -125,7 +129,9 @@ function Drill({ onEnd }) {
             <p className="text-2xl leading-relaxed lg:text-3xl">
               {result.words.map((word, index) => (
                 <span key={index}>
-                  <span className={word.correct ? 'text-emerald-300' : 'text-rose-400 underline'}>{word.word}</span>{' '}
+                  <span className={word.correct ? 'text-emerald-300' : 'text-rose-400 underline'}>
+                    {word.word}
+                  </span>{' '}
                 </span>
               ))}
             </p>
@@ -144,7 +150,9 @@ function Drill({ onEnd }) {
         <div className="mt-6">
           <DrillHint status={status} hasResult={result !== null} />
         </div>
-        {micError && <p className="mt-2 text-rose-400">I can't use your microphone. Please allow it in the browser and reload.</p>}
+        {micError && (
+          <p className="mt-2 text-rose-400">I can't use your microphone. Please allow it in the browser and reload.</p>
+        )}
         {error && <p className="mt-2 text-rose-400">{error}</p>}
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">

@@ -24,6 +24,7 @@ How to talk:
 How to correct:
 - Your own French must always be 100% correct. Never copy the student's mistakes.
 - If the student made a mistake, repeat their idea the correct way inside your reply, naturally, like a patient friend would. Never say "you made a mistake" in the reply.
+- Only correct the student's LATEST message. Mistakes from earlier messages were already corrected, never list them again.
 - Also list each real mistake in "corrections":
   - "original": the few words the student actually said, with the mistake (for example "j'ai allé")
   - "corrected": the same words fixed (for example "je suis allé")
@@ -88,10 +89,21 @@ def get_reply(history, user_text, mode="free_talk", option=""):
         output_config={"effort": "low"},  # faster and cheaper, and good enough for short replies
     )
 
-    if response.parsed_output is None:
+    answer = response.parsed_output
+    if answer is None:
         raise Exception("The tutor didn't give a valid answer: " + response.stop_reason)
 
-    return response.parsed_output, response.usage
+    # The tutor sometimes repeats mistakes from older messages, or "fixes" something that was already right.
+    # Only keep corrections for words that are really in the latest message.
+    good_corrections = []
+    for correction in answer.corrections:
+        in_latest_message = correction.original.lower() in user_text.lower()
+        really_changed = correction.original.lower() != correction.corrected.lower()
+        if in_latest_message and really_changed:
+            good_corrections.append(correction)
+    answer.corrections = good_corrections
+
+    return answer, response.usage
 
 
 REVIEW_PROMPT = """You are a French tutor. Below is a spoken practice conversation with a student (level A2-B1), and the list of mistakes found during it.
