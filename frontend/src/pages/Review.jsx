@@ -65,7 +65,7 @@ function Review({ session, result, onHome }) {
   const nothingToReview = userMessages.length === 0 && drillScores.length === 0
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col gap-8 px-6 py-12">
+    <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 px-4 py-10 sm:gap-8 sm:px-6 sm:py-12">
       <div className="text-center">
         <h1 className="text-4xl font-light">Session review</h1>
         <p className="mt-2 text-slate-400">
@@ -89,7 +89,9 @@ function Review({ session, result, onHome }) {
           <Section title="What went well">
             <ul className="space-y-2">
               {review.good_points.map((point, index) => (
-                <li key={index} className="text-emerald-300">+ {point}</li>
+                <li key={index} className="text-emerald-300">
+                  + {point}
+                </li>
               ))}
             </ul>
           </Section>
@@ -97,7 +99,9 @@ function Review({ session, result, onHome }) {
           <Section title="What to work on">
             <ul className="space-y-2">
               {review.tips.map((tip, index) => (
-                <li key={index} className="text-amber-200">→ {tip}</li>
+                <li key={index} className="text-amber-200">
+                  → {tip}
+                </li>
               ))}
             </ul>
           </Section>
@@ -145,7 +149,7 @@ function Review({ session, result, onHome }) {
         </Section>
       )}
 
-      <div className="flex justify-center gap-3 pb-8">
+      <div className="flex flex-wrap justify-center gap-3 pb-8">
         {!nothingToReview && (
           <button
             onClick={download}

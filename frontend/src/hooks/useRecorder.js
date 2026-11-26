@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Asks for the microphone once, then records short clips with start() and stop()
 function useRecorder() {
-  const [micError, setMicError] = useState(false)
+  // phones only give access to the microphone on https pages,
+  // on http pages navigator.mediaDevices doesn't even exist
+  const [micError, setMicError] = useState(!navigator.mediaDevices)
   const streamRef = useRef(null)
   const recorderRef = useRef(null)
   const chunksRef = useRef([])
@@ -11,6 +13,7 @@ function useRecorder() {
 
   useEffect(() => {
     let stopped = false
+    if (!navigator.mediaDevices) return
 
     navigator.mediaDevices
       .getUserMedia({ audio: true })

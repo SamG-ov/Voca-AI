@@ -39,10 +39,10 @@ function Home({ onStart, settings, onSettingsChange }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-8 px-6 py-16 text-center">
+    <div className="flex min-h-dvh flex-col items-center gap-8 px-4 py-10 text-center sm:px-6 sm:py-16">
       <Orb status="idle" size="h-24 w-24" />
       <div>
-        <h1 className="text-5xl font-light">
+        <h1 className="text-4xl font-light sm:text-5xl">
           Voca<span className="text-cyan-400">-AI</span>
         </h1>
         <p className="mt-3 text-slate-400">Practice speaking French with your own tutor</p>

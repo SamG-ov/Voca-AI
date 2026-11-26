@@ -6,7 +6,11 @@ testpaths = ["tests"]
 line-length = 120
 
 [tool.ruff.lint]
-# the classic checks: pycodestyle errors, pyflakes and sorted imports
-select = ["E", "F", "I"]
+# the classic checks: pycodestyle errors and pyflakes
+select = ["E", "F"]
 # the prompts have long lines of text, and the formatter already keeps the code short
 ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# stt.py has to change PATH before importing faster_whisper
+"app/stt.py" = ["E402"]

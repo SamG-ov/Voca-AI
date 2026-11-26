@@ -8,7 +8,7 @@ I'm learning French (somewhere between A2 and B1) and the part I struggle with m
 
 ## What it does
 
-You hold the spacebar, say something in French, and let go. The tutor replies out loud, and the conversation keeps going from there.
+On a computer you hold the spacebar, say something in French, and let go. On a phone you tap the mic, speak, and tap again. The tutor replies out loud, and the conversation keeps going from there.
 
 There are four ways to practice:
 
@@ -34,7 +34,7 @@ Each turn goes through three steps on the backend:
 ```
   Browser                         Backend (FastAPI)
   -------                         -----------------
-  hold SPACE, speak  --audio-->   1. speech to text    (faster-whisper, runs locally)
+  speak (SPACE/tap) --audio-->   1. speech to text    (faster-whisper, runs locally)
                                   2. tutor reply       (Claude Haiku via the Anthropic API)
   play reply, show   <--json---   3. text to speech    (edge-tts)
   transcript + cards
@@ -106,6 +106,17 @@ cd frontend
 npm install
 npm run dev
 ```
+
+### On a phone
+
+Phones only let a website use the microphone over https, so there's a separate command for testing on a phone on the same wifi:
+
+```bash
+cd frontend
+npm run dev:phone
+```
+
+Vite prints a "Network" address like `https://192.168.1.20:5173`. Open it on the phone, accept the certificate warning (it's a self-signed certificate for local testing), and allow the microphone.
 
 ## Privacy
 

@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Session from './pages/Session'
 import Drill from './pages/Drill'
 import Review from './pages/Review'
+import { unlockAudio } from './audio'
 
 const DEFAULT_SETTINGS = { voice: 'denise', speed: '-10%' }
 
@@ -31,6 +32,8 @@ function App() {
   }
 
   function startSession(newSession) {
+    // this runs right after a tap, so it's the moment to allow sound on phones
+    unlockAudio()
     setSession({ ...newSession, voice: settings.voice, speed: settings.speed })
     if (newSession.mode === 'drill') {
       setPage('drill')

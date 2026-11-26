@@ -3,7 +3,6 @@ import { motion } from 'motion/react'
 function CorrectionCard({ correction }) {
   return (
     <motion.div
-      layout
       initial={{ opacity: 0, x: 40 }}
       animate={{ opacity: 1, x: 0 }}
       className="rounded-xl border border-slate-800 bg-slate-900 p-4"

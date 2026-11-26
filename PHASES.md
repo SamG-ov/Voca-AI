@@ -15,7 +15,9 @@ I'll tick things off as I go.
 9. Repeat after me
 10. Session review
 11. Polish and tests
-12. Demo and final README
+12. Mobile version
+13. Deployment
+14. Demo and final README
 
 ---
 
@@ -214,7 +216,40 @@ Notes:
 - If I end a session while the tutor is still loading, its reply is ignored and doesn't play on the review page.
 - `ruff check .` and `ruff format .` for Python, and `npm run format` for the frontend. Ruff only uses the classic rules (E, F, I).
 
-## 12. Demo and final README
+## 12. Mobile version
+
+The app should work just as well on my phone (Android), since I'm going to deploy it.
+
+- [x] Tap the mic to start talking, tap again to stop (the spacebar still works on a computer)
+- [x] Mic button at the bottom of the screen, where my thumb is
+- [x] Corrections open as a full screen panel on the phone, and stay on the side on a computer
+- [x] Layout fits small screens: home page, session, drill and review
+- [x] Sound plays on phones too (iPhones need the audio to be "unlocked" by a tap first)
+- [x] `npm run dev:phone` to test on my phone over wifi, with https
+
+Finished when I can do a full session and a drill on my phone with only taps.
+
+Notes:
+- Phones only allow the microphone on https pages (localhost is the only exception), so `dev:phone` uses a self-signed certificate. The browser shows a warning the first time and you have to accept it.
+- The hints change with the device: "Tap the mic" on a phone, "Hold SPACE or click the mic" on a computer.
+- Uses `h-dvh` instead of `h-screen`, so the mic button isn't hidden behind the browser's address bar on a phone.
+
+## 13. Deployment
+
+Put the app online so I can use it on my phone from anywhere, and so people can try it from the README.
+I want it free and fast, so it runs on an Oracle Cloud "Always Free" server.
+
+- [ ] Speech to text with Groq's Whisper API on the server (the free server has no GPU), and keep local Whisper for working on my laptop
+- [ ] FastAPI also serves the built frontend, so everything is one server and one URL
+- [ ] Simple app password, so strangers can't use up my API credits
+- [ ] Oracle Cloud free VM (Ubuntu, ARM), with ports 80 and 443 open
+- [ ] Free domain name and automatic https with Caddy (phones need https for the microphone)
+- [ ] Run the backend as a service that restarts by itself
+- [ ] Write down every step in `DEPLOY.md`
+
+Finished when I can open the app on my phone over mobile data, log in, and do a full session.
+
+## 14. Demo and final README
 
 - [ ] Record a 1-2 minute demo video and a short GIF
 - [ ] Screenshots, setup instructions and the architecture diagram in the README
@@ -232,4 +267,3 @@ Finished when someone can open the repo and understand what it is and how it wor
 - Hands-free mode instead of push-to-talk
 - Interrupting the tutor while it's speaking
 - Spaced-repetition vocab review
-- A mobile version
