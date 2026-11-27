@@ -20,7 +20,7 @@ def fake_services(monkeypatch):
     """Replace speech to text, the tutor and text to speech with fakes"""
     calls = {}
 
-    def fake_transcribe(audio_bytes):
+    def fake_transcribe(audio_bytes, file_name):
         return "Je voudrais une café"
 
     def fake_get_reply(history, user_text, mode, option):
@@ -68,13 +68,13 @@ def test_empty_recording():
 
 
 def test_nothing_heard(monkeypatch):
-    monkeypatch.setattr(main, "transcribe", lambda audio: "")
+    monkeypatch.setattr(main, "transcribe", lambda audio, file_name: "")
     res = send_turn()
     assert res.status_code == 422
 
 
 def test_unreadable_audio(monkeypatch):
-    def broken_transcribe(audio):
+    def broken_transcribe(audio, file_name):
         raise ValueError("not audio")
 
     monkeypatch.setattr(main, "transcribe", broken_transcribe)
@@ -112,7 +112,7 @@ def test_modes_list():
 
 
 def test_drill_check(monkeypatch):
-    monkeypatch.setattr(main, "transcribe", lambda audio: "Le musée est fermé le mardi")
+    monkeypatch.setattr(main, "transcribe", lambda audio, file_name: "Le musée est fermé le mardi")
     res = client.post(
         "/api/drill/check",
         files={"audio": ("recording.webm", b"some audio")},
@@ -136,3 +136,17 @@ def test_review(monkeypatch):
     res = client.post("/api/review", json={"messages": [{"role": "user", "text": "Bonjour"}], "corrections": []})
     assert res.status_code == 200
     assert res.json()["tips"] == ["Practise être"]
+
+
+def test_password_is_needed_when_set(monkeypatch):
+    monkeypatch.setattr(main, "APP_PASSWORD", "secret")
+
+    assert client.get("/api/login").status_code == 401
+    assert client.get("/api/login", headers={"X-App-Password": "wrong"}).status_code == 401
+    assert client.get("/api/login", headers={"X-App-Password": "secret"}).status_code == 200
+    assert client.get("/api/modes").status_code == 401
+    assert client.get("/api/health").status_code == 200
+
+
+def test_no_password_needed_when_not_set():
+    assert client.get("/api/login").status_code == 200

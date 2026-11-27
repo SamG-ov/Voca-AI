@@ -1,15 +1,19 @@
 import base64
 import json
+import os
+import secrets
 import time
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app.config import FRONTEND_URL
+from app.config import APP_PASSWORD, FRONTEND_URL
 from app.drill import compare, random_sentence
 from app.modes import SCENARIOS, TOPICS, is_valid
-from app.stt import transcribe  # loads the whisper model when the server starts
+from app.stt import transcribe  # sets up speech to text when the server starts
 from app.tutor import START_MESSAGE, Correction, get_reply, get_review
 from app.tts import VOICES, synthesize
 
@@ -38,7 +42,7 @@ async def listen(audio):
         raise HTTPException(400, "The recording is empty")
 
     try:
-        text = transcribe(audio_bytes)
+        text = transcribe(audio_bytes, audio.filename)
     except Exception:
         raise HTTPException(400, "Could not read the audio file")
 
@@ -65,8 +69,26 @@ async def make_voice(text, voice, speed):
     return base64.b64encode(audio).decode()
 
 
+# When the app is online, every /api request needs the app password (except the health check),
+# so strangers can't use up my API credits
+@app.middleware("http")
+async def check_password(request: Request, call_next):
+    path = request.url.path
+    if APP_PASSWORD and path.startswith("/api/") and path != "/api/health":
+        given = request.headers.get("X-App-Password", "")
+        if not secrets.compare_digest(given.encode(), APP_PASSWORD.encode()):
+            return JSONResponse({"detail": "Wrong password"}, status_code=401)
+    return await call_next(request)
+
+
 @app.get("/api/health")
 def health():
+    return {"status": "ok"}
+
+
+# The frontend calls this to check the password (the middleware above does the actual check)
+@app.get("/api/login")
+def login():
     return {"status": "ok"}
 
 
@@ -191,3 +213,9 @@ def review(request: ReviewRequest):
         raise HTTPException(502, "The tutor couldn't write the review right now")
 
     return result
+
+
+# On the server, FastAPI also serves the built frontend (from "npm run build"),
+# so the whole app is one website. This has to come after all the /api routes.
+if os.path.isdir("../frontend/dist"):
+    app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")

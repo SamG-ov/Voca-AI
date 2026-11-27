@@ -1,0 +1,8 @@
+# Everything from requirements.txt, plus Whisper running on my own GPU
+# (the server doesn't need these, it uses the Groq API)
+-r requirements.txt
+
+faster-whisper==1.2.*
+av==18.*
+nvidia-cublas-cu12==12.*
+nvidia-cudnn-cu12==9.*

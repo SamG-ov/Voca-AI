@@ -8,5 +8,5 @@ os.environ["ANTHROPIC_API_KEY"] = "test-key"
 # Loading the real Whisper model is slow and needs the GPU,
 # so the tests use a fake speech to text module instead
 fake_stt = types.ModuleType("app.stt")
-fake_stt.transcribe = lambda audio: "Bonjour"
+fake_stt.transcribe = lambda audio, file_name="": "Bonjour"
 sys.modules["app.stt"] = fake_stt

@@ -3,12 +3,8 @@ uvicorn[standard]==0.32.*
 python-dotenv==1.0.*
 python-multipart==0.0.*
 
-faster-whisper==1.2.*
-av==18.*
-nvidia-cublas-cu12==12.*
-nvidia-cudnn-cu12==9.*
-
 anthropic==2.*
+groq==1.*
 
 edge-tts==7.*
 

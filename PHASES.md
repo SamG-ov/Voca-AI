@@ -239,13 +239,13 @@ Notes:
 Put the app online so I can use it on my phone from anywhere, and so people can try it from the README.
 I want it free and fast, so it runs on an Oracle Cloud "Always Free" server.
 
-- [ ] Speech to text with Groq's Whisper API on the server (the free server has no GPU), and keep local Whisper for working on my laptop
-- [ ] FastAPI also serves the built frontend, so everything is one server and one URL
-- [ ] Simple app password, so strangers can't use up my API credits
+- [x] Speech to text with Groq's Whisper API on the server (the free server has no GPU), and keep local Whisper for working on my laptop
+- [x] FastAPI also serves the built frontend, so everything is one server and one URL
+- [x] Simple app password, so strangers can't use up my API credits
 - [ ] Oracle Cloud free VM (Ubuntu, ARM), with ports 80 and 443 open
 - [ ] Free domain name and automatic https with Caddy (phones need https for the microphone)
 - [ ] Run the backend as a service that restarts by itself
-- [ ] Write down every step in `DEPLOY.md`
+- [x] Write down every step in `DEPLOY.md`
 
 Finished when I can open the app on my phone over mobile data, log in, and do a full session.
 

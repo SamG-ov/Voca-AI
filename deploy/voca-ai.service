@@ -1,0 +1,15 @@
+# Runs the backend in the background and restarts it if it crashes or the server reboots.
+# Copy to /etc/systemd/system/voca-ai.service
+
+[Unit]
+Description=Voca-AI backend
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Voca-AI/backend
+ExecStart=/home/ubuntu/Voca-AI/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

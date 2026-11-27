@@ -1,0 +1,7 @@
+# Caddy gets a free https certificate for the domain by itself
+# and sends every request to the FastAPI backend.
+# Change the domain to your own DuckDNS name.
+
+your-name.duckdns.org {
+    reverse_proxy 127.0.0.1:8000
+}

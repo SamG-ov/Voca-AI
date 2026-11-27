@@ -98,7 +98,7 @@ cp .env.example .env    # add your ANTHROPIC_API_KEY
 cd backend
 python -m venv .venv
 .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements-local.txt   # includes Whisper for the GPU
 uvicorn app.main:app --reload
 
 # frontend (in a second terminal)
@@ -118,9 +118,13 @@ npm run dev:phone
 
 Vite prints a "Network" address like `https://192.168.1.20:5173`. Open it on the phone, accept the certificate warning (it's a self-signed certificate for local testing), and allow the microphone.
 
+### Online
+
+To put it on a server (I use a free Oracle Cloud server), see [DEPLOY.md](DEPLOY.md). The server has no GPU, so there it uses Groq's Whisper API for speech to text (`STT_MODE=groq` in `.env`), and the app asks for a password so nobody else uses up my API credits.
+
 ## Privacy
 
-Everything runs on your own machine. Audio is transcribed locally and isn't saved anywhere. Only the text of the conversation is sent to the API. The API key stays in `.env` on the backend and never goes to the browser.
+When running locally, everything runs on your own machine. Audio is transcribed locally and isn't saved anywhere. On the server, the audio is sent to Groq for transcription instead. Only the text of the conversation is sent to the API. The API key stays in `.env` on the backend and never goes to the browser.
 
 ## Ideas for later
 

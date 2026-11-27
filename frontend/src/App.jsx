@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Home from './pages/Home'
+import Login from './pages/Login'
 import Session from './pages/Session'
 import Drill from './pages/Drill'
 import Review from './pages/Review'
 import { unlockAudio } from './audio'
+import { checkPassword } from './api'
 
 const DEFAULT_SETTINGS = { voice: 'denise', speed: '-10%' }
 
@@ -25,6 +27,15 @@ function App() {
   const [session, setSession] = useState(null)
   const [result, setResult] = useState(null)
   const [settings, setSettings] = useState(loadSettings)
+  // null while we're still checking the saved password
+  const [loggedIn, setLoggedIn] = useState(null)
+
+  useEffect(() => {
+    checkPassword()
+      .then((ok) => setLoggedIn(ok))
+      // if the backend is down, let the home page show that error instead
+      .catch(() => setLoggedIn(true))
+  }, [])
 
   function changeSettings(newSettings) {
     setSettings(newSettings)
@@ -45,6 +56,14 @@ function App() {
   function endSession(sessionResult) {
     setResult(sessionResult)
     setPage('review')
+  }
+
+  if (loggedIn === null) {
+    return null
+  }
+
+  if (!loggedIn) {
+    return <Login onLogin={() => setLoggedIn(true)} />
   }
 
   if (page === 'session') {
